@@ -53,12 +53,16 @@ This project uses RoboFlow and Depthai for person detection, person following, a
  ## Videos
 
 ### Person Detection 
+We combined the Person detection model with the LIDAR, so the robot will automatically follow a person and keep in one meter distance.
 [![Person Tracking](https://img.youtube.com/vi/v7JGEvncHDk/hqdefault.jpg)](https://www.youtube.com/watch?v=v7JGEvncHDk)
 
 ### Gesture Detection
+We created a callback Timer to receive the prediction from the gesture detection model. Once it detects the "Rock", the robot would stop and take a picture after 3 seconds，and save it to the folder we specified. 
+
 [![Gesture Detection](https://img.youtube.com/vi/e5u4Fdw_I-c/hqdefault.jpg)](https://www.youtube.com/watch?v=e5u4Fdw_I-c)
 
 ### Picture Upload
+When the pictures are saved to the specified folder, it would be uploaded to the Google Drive, and then the folder would be cleared.
 [![Data Upload](https://img.youtube.com/vi/IjKZK5SK12w/hqdefault.jpg)](https://www.youtube.com/watch?v=IjKZK5SK12w)
 
 ## Software
