@@ -18,7 +18,7 @@ Jimmy Nguyen - MAE Controls & Robotics (MC34) - Class of 2025
 
 Michael Ramirez - MAE Controls & Robotics (MC34) - Class of 2025
 
-Jingnan Huang - MAE
+Jingnan Huang - MAE (Exchange Student)
 
 
 ## Abstract
