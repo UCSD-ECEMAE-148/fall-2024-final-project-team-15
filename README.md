@@ -1,5 +1,6 @@
 
 # Selfie Robot
+[![](https://github.com/UCSD-ECEMAE-148/winter-2024-final-project-team-4/raw/main/images/UCSDLogo_JSOE_BlueGold.png)](https://jacobsschool.ucsd.edu/)
 MAE 148 Final Project
 Fall 2024 Team 15
 ![](fullcar.jpg)
@@ -10,6 +11,13 @@ Fall 2024 Team 15
 - [What We Promised](#what-we-promised)
 - [Accomplishments](#accomplishments)
 - [Challenges](#challenges)
+- [Videos](#videos)
+- [Running the Repository](#running-the-repotistory)
+- [Software](#software)
+- [Hardware](#hardware)
+- [Progress Updates](#Progress-Updates)
+- [Acknowledgements](#acknowledgements)
+- [Contact](#contact)
 
 ## Team Members
 Anurag Gajaria - MAE Controls & Robotics (MC34) - Class of 2025 - [LinkedIn](https://www.linkedin.com/in/anurag-gajaria/)
@@ -18,7 +26,7 @@ Jimmy Nguyen - MAE Controls & Robotics (MC34) - Class of 2025
 
 Michael Ramirez - MAE Controls & Robotics (MC34) - Class of 2025
 
-Jingnan Huang - MAE (Exchange Student)
+Jingnan Huang - MAE
 
 
 ## Abstract
@@ -53,19 +61,91 @@ This project uses RoboFlow and Depthai for person detection, person following, a
  ## Videos
 
 ### Person Detection 
-We combined the Person detection model with the LIDAR, so the robot will automatically follow a person and keep in one meter distance.
-
 [![Person Tracking](https://img.youtube.com/vi/v7JGEvncHDk/hqdefault.jpg)](https://www.youtube.com/watch?v=v7JGEvncHDk)
 
 ### Gesture Detection
-We created a callback Timer to receive the prediction from the gesture detection model. Once it detects the "Rock", the robot would stop and take a picture after 3 seconds，and save it to the folder we specified. 
-
 [![Gesture Detection](https://img.youtube.com/vi/e5u4Fdw_I-c/hqdefault.jpg)](https://www.youtube.com/watch?v=e5u4Fdw_I-c)
 
 ### Picture Upload
-When the pictures are saved to the specified folder, it would be uploaded to the Google Drive, and then the folder would be cleared.
-
 [![Data Upload](https://img.youtube.com/vi/IjKZK5SK12w/hqdefault.jpg)](https://www.youtube.com/watch?v=IjKZK5SK12w)
+
+## Running the Repository
+If you are interested in reproducing our project, here are a few steps to get you started with our repo:
+
+1.  Follow instuctions on  [UCSD Robocar Framework Guidebook](https://docs.google.com/document/d/1YS5YGbo8evIo9Mlb0J-w2r3bZfju37Zl4UmdaN2CD2A/),  
+    pull  `devel`  image on your JTN:  `docker pull djnighti/ucsd_robocar:devel`
+2.  `sudo apt update && sudo apt upgrade`  
+    (make sure you upgrade the packages, or else it won't work; maybe helpful if you run into some error  [https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey](https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey))  
+    check if  `slam_toolbox`  is installed and launchable:  
+    
+    sudo apt install ros-foxy-slam-toolbox
+    source_ros2
+    ros2 launch slam_toolbox online_async_launch.py
+    
+    Output should be similar to:
+    ```
+    [INFO] [launch]: All log files can be found below /root/.ros/log/2024-03-16-03-57-52-728234-ucsdrobocar-148-07-14151
+    [INFO] [launch]: Default logging verbosity is set to INFO
+    [INFO] [async_slam_toolbox_node-1]: process started with pid [14173]
+    [async_slam_toolbox_node-1] 1710561474.218342 [7] async_slam: using network interface wlan0 (udp/192.168.16.252) selected arbitrarily from: wlan0, docker0
+    [async_slam_toolbox_node-1] [INFO] [1710561474.244055467] [slam_toolbox]: Node using stack size 40000000
+    [async_slam_toolbox_node-1] 1710561474.256172 [7] async_slam: using network interface wlan0 (udp/192.168.16.252) selected arbitrarily from: wlan0, docker0
+    [async_slam_toolbox_node-1] [INFO] [1710561474.517037334] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
+    [async_slam_toolbox_node-1] [INFO] [1710561474.517655574] [slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.```
+3.  Since we upgrade all existing packges, we need to rebuild VESC pkg under  `/home/projects/sensor2_ws/src/vesc/src/vesc`  
+ ``` {
+    cd /home/projects/sensor2_ws/src/vesc/src/vesc
+    git pull
+    git switch foxy
+   ```
+    
+   make sure you are on foxy branch  
+    
+   Then, build 1st time under  `sensor2_ws/src/vesc/src/vesc`  
+    
+ ```
+	colcon build
+    source install/setup.bash
+```
+    
+   Then, 2nd time but under  `sensor2_ws/src/vesc`  
+```
+    cd /home/projects/sensor2_ws/src/vesc
+    colcon build
+    source install/setup.bash
+ ```
+  Now, try  `ros2 pkg xml vesc`, check if VESC pkg version has come to  `1.2.0`  
+    
+4.  Install  **Navigation 2**  package, and related packages:  
+    `sudo apt install ros-foxy-navigation2 ros-foxy-nav2* ros-foxy-robot-state-publisher ros-foxy-joint-state-publisher`
+5. Pull this repository
+```
+cd /home/projects/ros2_ws/src
+git clone https://github.com/UCSD-ECEMAE-148/fall-2024-final-project-team-15/tree/main
+cd final_project/
+ ```
+6. Create a Google cloud console account. Once you have an account, create a project.  
+	-  Enable the Google Drive API:
+	    -  In the API & Services section, click Library.
+	    -  Search for "Google Drive API".
+	    -  Select it and click Enable.
+	 - Create Credentials
+		 - Navigate to API & Services > Credentials.
+	- Create OAuth 2.0 Credentials**:
+		- Click on Create Credentials → OAuth client ID.
+	    -   If prompted, configure the OAuth consent screen:
+        -   Application name: Enter a name (e.g., `ROS2 Drive App`).
+        -   Add any necessary information and save.
+	    -   For Application type, choose Desktop app.
+	    -  Name the OAuth client (e.g., `data_uploader`) and click Create.
+7. Download Credentials and upload it to the drive.
+	    -   After creating the credentials, click Download JSON to save the file and name it `creds.json`.
+	    -   Keep this file secure as it contains sensitive information.
+8. Install the necessary requirements:
+	 ``pip install google-api-python-client google-auth google-auth-oauthlib google-auth-httplib2``
+9.  Remove the placeholder `token.JSON` and run `authenticate.py`.
+10. Run the software using 
+`ros2 launch final_project_pkg person_follower_pkg_launch.launch.py` 
 
 ## Software
 ### RoboFlow
@@ -73,7 +153,8 @@ When the pictures are saved to the specified folder, it would be uploaded to the
 ### Depthai
 
 ### Google Cloud Console + Google Drive
-
+ This creates a google application that is used to upload pictures to google drive. 
+ 
 ## Hardware
 -   **3D Printing:**  Camera Stands and Jetson Nano Case
 -   **Laser Cut:**  Base plate to mount electronics and other components.
@@ -112,51 +193,13 @@ _Additional Parts used for testing/debugging_
 [![Update 4](https://lh7-us.googleusercontent.com/docs/AHkbwyK0Ed7o1JHTKUENWlKdIrkuDCo3-phfGcGvCsoawmFidUMcXZo1Nh1i5cv9oAUdC0nWRGPOqrRMeXem3-qHJTwzoV6DoC1I00IkKh35wOUby_U5PWc=w1200-h630-p)](https://docs.google.com/presentation/d/1JtPEuXL4Afvt7PSGOWgyTa4lmRQebnCBscVASes4pXU/edit?usp=sharing)
 [![Final](https://lh7-us.googleusercontent.com/docs/AHkbwyKaYouCxZZ74gkw2q0c3lYbNnYGJHuv0AslUVIlt26BxiwKSY2OqE8ucMnkGBHg7CNpC7f1DwirD0vReUjd870YFI62CMv8f9uakiW7SoUcIH14GJum=w1200-h630-p)](https://docs.google.com/presentation/d/1WY-7qo8mRwJC0C6nT3Gl_l8i0WBEJi-sgSuun3u4sJQ/edit?usp=sharing)
 
-## Project Reproduction
-If you are interested in reproducing our project, here are a few steps to get you started with our repo:
+## Acknowledgments
 
-1.  Follow instuctions on  [UCSD Robocar Framework Guidebook](https://docs.google.com/document/d/1YS5YGbo8evIo9Mlb0J-w2r3bZfju37Zl4UmdaN2CD2A/),  
-    pull  `devel`  image on your JTN:  `docker pull djnighti/ucsd_robocar:devel`
-2.  `sudo apt update && sudo apt upgrade`  
-    (make sure you upgrade the packages, or else it won't work; maybe helpful if you run into some error  [https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey](https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey))  
-    check if  `slam_toolbox`  is installed and launchable:  
-    
-    sudo apt install ros-foxy-slam-toolbox
-    source_ros2
-    ros2 launch slam_toolbox online_async_launch.py
-    
-    Output should be similar to:
-    
-    [INFO] [launch]: All log files can be found below /root/.ros/log/2024-03-16-03-57-52-728234-ucsdrobocar-148-07-14151
-    [INFO] [launch]: Default logging verbosity is set to INFO
-    [INFO] [async_slam_toolbox_node-1]: process started with pid [14173]
-    [async_slam_toolbox_node-1] 1710561474.218342 [7] async_slam: using network interface wlan0 (udp/192.168.16.252) selected arbitrarily from: wlan0, docker0
-    [async_slam_toolbox_node-1] [INFO] [1710561474.244055467] [slam_toolbox]: Node using stack size 40000000
-    [async_slam_toolbox_node-1] 1710561474.256172 [7] async_slam: using network interface wlan0 (udp/192.168.16.252) selected arbitrarily from: wlan0, docker0
-    [async_slam_toolbox_node-1] [INFO] [1710561474.517037334] [slam_toolbox]: Using solver plugin solver_plugins::CeresSolver
-    [async_slam_toolbox_node-1] [INFO] [1710561474.517655574] [slam_toolbox]: CeresSolver: Using SCHUR_JACOBI preconditioner.
-    
-3.  Since we upgrade all existing packges, we need to rebuild VESC pkg under  `/home/projects/sensor2_ws/src/vesc/src/vesc`  
-    
-    cd /home/projects/sensor2_ws/src/vesc/src/vesc
-    git pull
-    git switch foxy
-    
-      
-    make sure you are on foxy branch  [![](https://private-user-images.githubusercontent.com/68310078/313373449-10398bc9-f546-497e-8e5f-9f380b39e018.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzQyMTA4MDcsIm5iZiI6MTczNDIxMDUwNywicGF0aCI6Ii82ODMxMDA3OC8zMTMzNzM0NDktMTAzOThiYzktZjU0Ni00OTdlLThlNWYtOWYzODBiMzllMDE4LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEyMTQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMjE0VDIxMDgyN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThmNGM3Njg3YmViMzgwOWM2MTY3MDBmNjZkZDIyNmZkOTJiYWU1ZWNkNTI2ZjQwNjQ0MmIxNzMzNTFjNTU1N2EmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.87qr0cTrS4vbg7JwObLDhVFXCQkt8I7WWvz-IqSoe3A)](https://private-user-images.githubusercontent.com/68310078/313373449-10398bc9-f546-497e-8e5f-9f380b39e018.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzQyMTA4MDcsIm5iZiI6MTczNDIxMDUwNywicGF0aCI6Ii82ODMxMDA3OC8zMTMzNzM0NDktMTAzOThiYzktZjU0Ni00OTdlLThlNWYtOWYzODBiMzllMDE4LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDEyMTQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMjE0VDIxMDgyN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThmNGM3Njg3YmViMzgwOWM2MTY3MDBmNjZkZDIyNmZkOTJiYWU1ZWNkNTI2ZjQwNjQ0MmIxNzMzNTFjNTU1N2EmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.87qr0cTrS4vbg7JwObLDhVFXCQkt8I7WWvz-IqSoe3A)  
-    Then, build 1st time under  `sensor2_ws/src/vesc/src/vesc`  
-    
-    colcon build
-    source install/setup.bash
-    
-    Then, 2nd time but under  `sensor2_ws/src/vesc`  
-    
-    cd /home/projects/sensor2_ws/src/vesc
-    colcon build
-    source install/setup.bash
-    
-    Now, try  `ros2 pkg xml vesc`, check if VESC pkg version has come to  `1.2.0`  
-    
-4.  Install  **Navigation 2**  package, and related packages:  
-    `sudo apt install ros-foxy-navigation2 ros-foxy-nav2* ros-foxy-robot-state-publisher ros-foxy-joint-state-publisher`
-5. Pull this repository...
+_Thank you to Professor Jack Silberman and our incredible TA's Alexander, Winston, and Vivek for an amazing Fall 2024 class!_
+
+## Contact
+
+-   Anurag Gajaria |  [agajaria@ucsd.edu](mailto:agajaria@ucsd.edu)
+-   Michael Ramirez |  [miramirez@ucsd.edu](mailto:miramirez@ucsd.edu)
+-   Jimmy Nguyen |  [clahey@ucsd.edu](mailto:jdn009@ucsd.edu)
+-   Jingnan Huang  
