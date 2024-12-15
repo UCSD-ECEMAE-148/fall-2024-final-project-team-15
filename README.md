@@ -149,8 +149,10 @@ cd final_project/
 
 ## Software
 ### RoboFlow
+Computer vision platform for dataset preparation, model training, and deployment of computer vision models.
 
 ### Depthai
+Computer vision AI platform that runs on edge devices like Jetson Nano and Luxonis OAKD Lite cameras. Utilizes depth capabilities of OAKD lite camera.
 
 ### Google Cloud Console + Google Drive
  This creates a google application that is used to upload pictures to google drive. 
